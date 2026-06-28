@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -35,41 +35,36 @@
   </div>
   <!-- FIN NAV -->
 
-
-<div class="container">
-<div class="row mt-5 mr-4">
-<div class="col-12 col-md-10 mb-4 d-flex align-items-center justify-content-center 
-justify-content-md-start">
-<form th:action="@{/search}" class="search-bar d-flex w-100" style="margin-left: 
-25px;">
-<input name="q" class="form-control w-65" placeholder="Search for movies...">
-<button class="btn btn-secondary bu ml-2" type="submit">Search</button>
-</form>
-</div>
-<div class="col-12 col-md-2 mb-4 d-flex align-items-center justify-content-end">
-<a href="/movies/create" class="btn btn-success">New movie</a>
-</div>
-</div>
-</div>
-
- <!-- CONTAINER -->
-<div class="container mt-4 mb-4">
-  <!-- ROW -->
-  <div class="row">
-      <!-- CARD -->
-      <div th:each="movie : ${movies}" class="col-6 col-sm-5 col-md-3">
-          <div class="movie-card">
-              <img th:src="${movie.img}" class="card-img-top" alt="movie">
-              <div class="card-body">
-                  <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
-                  <p><strong>Genre:</strong> Action</p>
-                  <p><strong></strong><a th:href="@{/movieByVendor(vendorId=${movie.vendor.id})}" class="badge badge-pill badge-warning" th:text="${movie.vendor.name}"></a></p>
-                  <p th:text="${movie.description}" class="card-text"><strong>Description:</strong> Movie description.</p>
-              </div>
-          </div>
-      </div> <!-- FIN CARD -->                          
-  </div> <!-- FIN ROW -->        
-</div> <!-- FIN CONTAINER --> 
+   <!-- CONTAINER -->
+  <div class="container mt-4 mb-4">
+    <h1>New movie</h1>
+    <!-- ROW -->
+    <div class="row">
+      <form method="post" th:action="@{/movies/save}" th:object="${movie}" class="col-md-12">
+        <div class="form-group"><!-- Movie name-->
+          <label for="name">Name</label>
+          <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Movie name">
+        </div>
+        <div class="form-group"><!--Movie description-->
+          <label for="description">Description</label>
+          <textarea class="form-control" th:field="*{description}" id="description" rows="3"
+            placeholder="Movie description"></textarea>
+        </div>
+        <div class="form-group"><!--Movie img-->
+          <label for="img">Image</label>
+          <input type="text" class="form-control" th:field="*{img}" id="img" placeholder="Movie image">
+        </div>
+        <div class="form-group"><!--Movie vendor-->
+          <label for="vendor">Vendor</label>
+          <select class="form-control" th:field="*{vendor}" id="vendor">
+            <option th:each="vendor : ${vendors}" th:value="${vendor.id}" th:text="${vendor.name}"></option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-success">Save</button>
+      </form>
+  
+    </div> <!-- FIN ROW -->
+  </div> <!-- FIN CONTAINER -->
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

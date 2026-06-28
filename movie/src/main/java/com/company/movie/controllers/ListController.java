@@ -1,9 +1,15 @@
 package com.company.movie.controllers;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.company.movie.models.Movie;
 import com.company.movie.service.MovieService;
+
+import org.springframework.ui.Model;
 
 @Controller
 public class ListController {
@@ -15,9 +21,32 @@ public class ListController {
     ) {
         this.movieService = mopService;
     }
+    // public function listMovies()
+// {
+//     $featured = Movie::all(); // O el servicio que utilices
+    
+//     // Opción A: Usando el helper view con un array
+//     return view('list', ['movies' => $featured]);
 
+// }
     @GetMapping("/list")
-    public String listMovies(){
+    public String listMovies(Model model){
+         List<Movie> featured = movieService.findMovies();
+         model.addAttribute( "movies", featured);
+        return "list";
+    }
+
+        @GetMapping("/movieByVendor")
+    public String listMoviesByVendor(int vendorId, Model model){
+         List<Movie> movies = movieService.findByVendor(vendorId);
+         model.addAttribute( "movies", movies);
+        return "list";
+    }
+
+    @GetMapping("/search")
+       public String search(@RequestParam("q") String query, Model model){
+         List<Movie> movies = movieService.search(query);
+         model.addAttribute( "movies", movies);
         return "list";
     }
 

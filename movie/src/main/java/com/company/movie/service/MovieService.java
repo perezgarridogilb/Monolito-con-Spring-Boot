@@ -19,7 +19,13 @@ public class MovieService {
 
 
     public List<Movie> findMovies() {
-        return movieRepository.findAll();
+        return movieRepository.findMovieByOrder();
+    }
+    public List<Movie> findByVendor(int vendorId) {
+        return movieRepository.findByVendor(vendorId);
+    }
+    public List<Movie> search(String query) {
+        return movieRepository.search(query);
     }
 
     // public List<Movie> featuresdMovie() {

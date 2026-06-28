@@ -16,6 +16,10 @@ body {
     /* Navbar oscura */
 }
 
+.card {
+    background-color: #232323;
+}
+
 .navbar-brand,
 .nav-link {
     color: #e0e0e0 !important;

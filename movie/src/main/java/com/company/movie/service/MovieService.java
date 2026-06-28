@@ -30,6 +30,13 @@ public class MovieService {
     public Movie saveMovie(Movie movie) {
         return movieRepository.save(movie);
     }
+    public Movie getMovieById(Integer id) {
+        return movieRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
+    }
+    public void deleteMovie(Integer id) {
+        movieRepository.deleteById(id);
+    }
 
     // public List<Movie> featuresdMovie() {
     //     List<Movie>  features = new ArrayList<>();

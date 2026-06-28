@@ -57,17 +57,24 @@ justify-content-md-start">
   <!-- ROW -->
   <div class="row">
       <!-- CARD -->
-      <div th:each="movie : ${movies}" class="col-6 col-sm-5 col-md-3">
-          <div class="movie-card">
+
+  <!-- CARD -->
+        <div th:each="movie : ${movies}" class="col-12 col-sm-6 col-md-3 mb-4">
+          <a th:href="@{/moviesDetails/{id}(id=${movie.id})}" class="movie-card" style="display: 
+          block; text-decoration: none; color: inherit;">
+            <div class="card">
               <img th:src="${movie.img}" class="card-img-top" alt="movie">
               <div class="card-body">
-                  <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
-                  <p><strong>Genre:</strong> Action</p>
-                  <p><strong></strong><a th:href="@{/movieByVendor(vendorId=${movie.vendor.id})}" class="badge badge-pill badge-warning" th:text="${movie.vendor.name}"></a></p>
-                  <p th:text="${movie.description}" class="card-text"><strong>Description:</strong> Movie description.</p>
+                <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
+                <p><strong>Genre:</strong> <span>Action</span></p>
+                <p><strong>Vendor:</strong> <span class="badge badge-pill 
+          badge-warning" th:text="${movie.vendor.name}"></span></p>
+                <p th:text="${#strings.abbreviate(movie.description, 70)}" class="card-text">
+                  <strong>Description:</strong> Movie description.
+                </p>
               </div>
-          </div>
-      </div> <!-- FIN CARD -->                          
+            </div>
+          </a>                          
   </div> <!-- FIN ROW -->        
 </div> <!-- FIN CONTAINER --> 
 

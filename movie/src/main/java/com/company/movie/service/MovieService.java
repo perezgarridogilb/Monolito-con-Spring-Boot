@@ -27,6 +27,9 @@ public class MovieService {
     public List<Movie> search(String query) {
         return movieRepository.search(query);
     }
+    public Movie saveMovie(Movie movie) {
+        return movieRepository.save(movie);
+    }
 
     // public List<Movie> featuresdMovie() {
     //     List<Movie>  features = new ArrayList<>();

@@ -21,15 +21,7 @@ public class ListController {
     ) {
         this.movieService = mopService;
     }
-    // public function listMovies()
-// {
-//     $featured = Movie::all(); // O el servicio que utilices
-    
-//     // Opción A: Usando el helper view con un array
-//     return view('list', ['movies' => $featured]);
-
-// }
-    @GetMapping("/list")
+    @GetMapping({"/", "/list"})
     public String listMovies(Model model){
          List<Movie> featured = movieService.findMovies();
          model.addAttribute( "movies", featured);

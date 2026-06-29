@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.company.movie.models.Movie;
 import com.company.movie.service.MovieService;
@@ -28,13 +29,19 @@ public class MovieCrudController {
         return "formMovie";
     }
     @PostMapping("/movies/save")
-    public String saveMovie(@Valid Movie movie, BindingResult result, Model model) {
+    public String saveMovie(@Valid Movie movie, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
             model.addAttribute("vendors", vendorService.findVendor());
+            redirectAttributes.addFlashAttribute("errorMessage", "Por favor corrige los errores en el formulario");
             return "formMovie";
         }
+// msg de exito
+String successMessage = (movie.getId() == null) ? "pelicula creada" : "pelicula actualizada";
+
         movieService.saveMovie(movie);
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+
         return "redirect:/moviesDetails/" + movie.getId();
     }
 

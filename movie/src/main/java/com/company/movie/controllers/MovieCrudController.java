@@ -2,6 +2,7 @@ package com.company.movie.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import com.company.movie.models.Movie;
 import com.company.movie.service.MovieService;
 import com.company.movie.service.VendorService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -26,7 +28,12 @@ public class MovieCrudController {
         return "formMovie";
     }
     @PostMapping("/movies/save")
-    public String saveMovie(Movie movie) {
+    public String saveMovie(@Valid Movie movie, BindingResult result, Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("vendors", vendorService.findVendor());
+            return "formMovie";
+        }
         movieService.saveMovie(movie);
         return "redirect:/moviesDetails/" + movie.getId();
     }

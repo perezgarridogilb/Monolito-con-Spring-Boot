@@ -45,21 +45,33 @@
         <div class="form-group"><!-- Movie name-->
           <label for="name">Name</label>
           <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Movie name">
+          <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+<span th:errors="*{name}">Error</span>
+</div>
         </div>
         <div class="form-group"><!--Movie description-->
           <label for="description">Description</label>
           <textarea class="form-control" th:field="*{description}" id="description" rows="3"
             placeholder="Movie description"></textarea>
+            <div th:if="${#fields.hasErrors('description')}" class="text-danger">
+<span th:errors="*{description}">Error</span>
+</div>
         </div>
         <div class="form-group"><!--Movie img-->
           <label for="img">Image</label>
           <input type="text" class="form-control" th:field="*{img}" id="img" placeholder="Movie image">
+          <div th:if="${#fields.hasErrors('img')}" class="text-danger">
+<span th:errors="*{img}">Error</span>
+</div>
         </div>
         <div class="form-group"><!--Movie vendor-->
           <label for="vendor">Vendor</label>
           <select class="form-control" th:field="*{vendor}" id="vendor">
             <option th:each="vendor : ${vendors}" th:value="${vendor.id}" th:text="${vendor.name}"></option>
           </select>
+                              <div th:if="${#fields.hasErrors('vendor')}" class="text-danger">
+<span th:errors="*{vendor}">Error</span>
+</div>
         </div>
         <button type="submit" class="btn btn-success">Save</button>
       </form>

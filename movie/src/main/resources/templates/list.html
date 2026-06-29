@@ -1,18 +1,21 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-     <link rel="stylesheet" th:href="@{/css/style.css}" />
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Hello, world!</title>
-  </head>
-  <body>
-    <!-- NAV -->
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+  <title>Hello, world!</title>
+</head>
+
+<body>
+  <!-- NAV -->
   <div class="row bg">
     <nav class="navbar navbar-expand-lg navbar-dark container">
       <a class="navbar-brand" href="#">App - Movie</a>
@@ -36,52 +39,126 @@
   <!-- FIN NAV -->
 
 
-<div class="container">
-<div class="row mt-5 mr-4">
-<div class="col-12 col-md-10 mb-4 d-flex align-items-center justify-content-center 
+  <div class="container">
+    <div class="row mt-5 mr-4">
+      <div class="col-12 col-md-10 mb-4 d-flex align-items-center justify-content-center 
 justify-content-md-start">
-<form th:action="@{/search}" class="search-bar d-flex w-100" style="margin-left: 
+        <form th:action="@{/search}" class="search-bar d-flex w-100" style="margin-left: 
 25px;">
-<input name="q" class="form-control w-65" placeholder="Search for movies...">
-<button class="btn btn-secondary bu ml-2" type="submit">Search</button>
-</form>
-</div>
-<div class="col-12 col-md-2 mb-4 d-flex align-items-center justify-content-end">
-<a href="/movies/create" class="btn btn-success">New movie</a>
-</div>
-</div>
-</div>
+          <input name="q" class="form-control w-65" placeholder="Search for movies...">
+          <button class="btn btn-secondary bu ml-2" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="col-12 col-md-2 mb-4 d-flex align-items-center justify-content-end">
+        <a href="/movies/create" class="btn btn-success">New movie</a>
+      </div>
+    </div>
+  </div>
 
- <!-- CONTAINER -->
-<div class="container mt-4 mb-4">
-  <!-- ROW -->
-  <div class="row">
+  <!-- CONTAINER -->
+  <div class="container mt-4 mb-4">
+    <!-- ROW -->
+    <div class="row">
       <!-- CARD -->
 
-  <!-- CARD -->
-        <div th:each="movie : ${movies}" class="col-12 col-sm-6 col-md-3 mb-4">
-          <a th:href="@{/moviesDetails/{id}(id=${movie.id})}" class="movie-card" style="display: 
+      <!-- CARD -->
+      <div th:each="movie : ${movies}" class="col-12 col-sm-6 col-md-3 mb-4">
+        <a th:href="@{/moviesDetails/{id}(id=${movie.id})}" class="movie-card" style="display: 
           block; text-decoration: none; color: inherit;">
-            <div class="card">
-              <img th:src="${movie.img}" class="card-img-top" alt="movie">
-              <div class="card-body">
-                <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
-                <p><strong>Genre:</strong> <span>Action</span></p>
-                <p><strong>Vendor:</strong> <span class="badge badge-pill 
+          <div class="card">
+            <img th:src="${movie.img}" class="card-img-top" alt="movie">
+            <div class="card-body">
+              <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
+              <p><strong>Genre:</strong> <span>Action</span></p>
+              <p><strong>Vendor:</strong> <span class="badge badge-pill 
           badge-warning" th:text="${movie.vendor.name}"></span></p>
-                <p th:text="${#strings.abbreviate(movie.description, 70)}" class="card-text">
-                  <strong>Description:</strong> Movie description.
-                </p>
-              </div>
+              <p th:text="${#strings.abbreviate(movie.description, 70)}" class="card-text">
+                <strong>Description:</strong> Movie description.
+              </p>
             </div>
-          </a>                          
-  </div> <!-- FIN ROW -->        
-</div> <!-- FIN CONTAINER --> 
+          </div>
+        </a>
+      </div> <!-- FIN ROW -->
+    </div> <!-- FIN CONTAINER -->
+<!-- @if ($movies->hasPages())
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {{-- Botón Anterior --}}
+            <li class="page-item {{ $movies->onFirstPage() ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ $movies->previousPageUrl() }}">Previous</a>
+            </li>
+
+            {{-- Números de página --}}
+            @foreach ($movies->getUrlRange(1, $movies->lastPage()) as $page => $url)
+                <li class="page-item {{ $page == $movies->currentPage() ? 'active' : '' }}">
+                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                </li>
+            @endforeach
+
+            {{-- Botón Siguiente --}}
+            <li class="page-item {{ !$movies->hasMorePages() ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ $movies->nextPageUrl() }}">Next</a>
+            </li>
+        </ul>
+    </nav>
+@endif -->
+    <!-- PaginaciÃ³n -->
+    <div th:if="${totalPages > 1}">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <!-- BotÃ³n de pÃ¡gina anterior -->
+          <li th:classappend="${currentPage == 0} ? 'disabled' : ''" class="page-item">
+            <!-- Sin filtros -->
+            <a th:href="@{/(page=${currentPage - 1})}" th:if="${vendorId == 
+null and query == null}" class="page-link">Previous</a>
+            <!-- Filtro por proveedor -->
+            <a th:href="@{/movieByVendor(vendorId=${vendorId}, 
+page=${currentPage - 1})}" th:if="${vendorId != null}" class="page-link">Previous</a>
+            <!-- Filtro por bÃºsqueda -->
+            <a th:href="@{/search(q=${query}, page=${currentPage - 1})}" th:if="${query != null}"
+              class="page-link">Previous</a>
+          </li>
+          <!-- NÃºmeros de pÃ¡gina -->
+          <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active' : ''"
+            th:if="${i >= currentPage - 4 and i <= currentPage + 4}" class="page-item">
+            <!-- Sin filtros -->
+            <a th:href="@{/(page=${i})}" th:if="${vendorId == null and query 
+== null}" th:text="${i + 1}" class="page-link"></a>
+            <!-- Filtro por proveedor -->
+            <a th:href="@{/movieByVendor(vendorId=${vendorId}, page=${i})}" th:if="${vendorId != null}"
+              th:text="${i + 1}" class="page-link"></a>
+            <!-- Filtro por bÃºsqueda -->
+            <a th:href="@{/search(q=${query}, page=${i})}" th:if="${query != 
+null}" th:text="${i + 1}" class="page-link"></a>
+          </li>
+          <!-- BotÃ³n de pÃ¡gina siguiente -->
+          <li th:classappend="${currentPage == totalPages - 1} ? 'disabled' : 
+''" class="page-item">
+            <!-- Sin filtros -->
+            <a th:href="@{/(page=${currentPage + 1})}" th:if="${vendorId == 
+null and query == null}" class="page-link">Next</a>
+            <!-- Filtro por proveedor -->
+            <a th:href="@{/movieByVendor(vendorId=${vendorId}, 
+page=${currentPage + 1})}" th:if="${vendorId != null}" class="page-link">Next</a>
+            <!-- Filtro por bÃºsqueda -->
+            <a th:href="@{/search(q=${query}, page=${currentPage + 1})}" th:if="${query != null}"
+              class="page-link">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div><!-- fin if-->
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"></script>
+</body>
+
 </html>

@@ -3,6 +3,8 @@ package com.company.movie.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.company.movie.models.Movie;
@@ -18,14 +20,14 @@ public class MovieService {
     }
 
 
-    public List<Movie> findMovies() {
-        return movieRepository.findMovieByOrder();
+    public Page<Movie> findMovies(Pageable pageable) {
+        return movieRepository.findMovieByOrder(pageable);
     }
-    public List<Movie> findByVendor(int vendorId) {
-        return movieRepository.findByVendor(vendorId);
+    public Page<Movie> findByVendor(int vendorId, Pageable pageable) {
+        return movieRepository.findByVendor(vendorId, pageable);
     }
-    public List<Movie> search(String query) {
-        return movieRepository.search(query);
+    public Page<Movie> search(String query, Pageable pageable) {
+        return movieRepository.search(query, pageable);
     }
     public Movie saveMovie(Movie movie) {
         return movieRepository.save(movie);

@@ -58,11 +58,9 @@ src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></sc
 
           <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-primary">Editar</a>
 
-<form th:action="@{/movies/delete/{id}(id=${movie.id})}" method="post" 
-onsubmit="return confirm('Â¿EstÃ¡s seguro de que deseas eliminar esta pelÃ­cula?');" 
-class="d-inline" style="margin-left: 10px;">
+<form id="deleteForm" th:action="@{/movies/delete/{id}(id=${movie.id})}" method="post" class="d-inline" style="margin-left: 10px;">
 <input type="hidden" name="_method" value="delete" />
-<button type="submit" class="btn btn-danger">Eliminar</button>
+<button type="button" id="deleteButton" class="btn btn-danger">Eliminar</button>
 </form>
 
 
@@ -76,8 +74,11 @@ class="d-inline" style="margin-left: 10px;">
 var successMessage = /*[[${successMessage}]]*/ '';
 var errorMessage = /*[[${errorMessage}]]*/ '';
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script th:src="@{/js/toastr.js}"></script>
+<script th:src="@{/js/sweeetAlert.js}"></script>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->

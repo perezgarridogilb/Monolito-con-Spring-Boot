@@ -31,6 +31,7 @@ public class User {
     private String address;
     private String password;
 
+    //  private String username;
     @ManyToOne
     @JoinColumn(name = "rol_id")
     private Rol rol;

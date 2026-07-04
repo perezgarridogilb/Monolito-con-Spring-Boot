@@ -35,7 +35,7 @@ public class AccountController {
     @GetMapping("/register")
     public String register(Model model) {
         RegisterDTO registerDTO = new RegisterDTO();
-        model.addAttribute(registerDTO);
+model.addAttribute("registerDto", new RegisterDTO());
         model.addAttribute("success", false);
         return "register";
     }

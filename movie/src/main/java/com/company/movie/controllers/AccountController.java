@@ -42,7 +42,12 @@ model.addAttribute("registerDto", new RegisterDTO());
 
 
         @PostMapping("/register")
-    public String register(Model model, @Valid @ModelAttribute RegisterDTO registerDto, BindingResult result) {
+    public String register(Model model, 
+        // Equivale a recibir un objeto de tipo RegisterDTO mediante la validación 
+    // y estructuración de un FormRequest. No es un 'input' del request, sino 
+    // el mapeo completo de los datos del formulario a un objeto tipado.
+        @Valid @ModelAttribute("registerDto") RegisterDTO registerDto, 
+        BindingResult result) {
  
         if (!registerDto.getPassword().equals(registerDto.getConfirmPassword())) {
             result.addError(
@@ -67,6 +72,8 @@ model.addAttribute("registerDto", new RegisterDTO());
                 newUser.setEmail(registerDto.getEmail());
                 newUser.setPhone(registerDto.getPhone());
                 newUser.setAddress(registerDto.getAddress());
+                newUser.setRol(userRol);
+
                 newUser.setCreatedAt(new Date());
 
                 newUser.setPassword(passwordEncoder.encode(registerDto.getPassword()));

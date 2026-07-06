@@ -39,12 +39,43 @@ public class MovieCrudController {
         return "formMovie";
     }
     @PostMapping("/movies/save")
-    public String saveMovie(@Valid Movie movie, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String saveMovie(
+        @Valid Movie movie, 
+        BindingResult result, 
+        @RequestParam("imageFile") MultipartFile imagFile,
+        Model model, 
+        RedirectAttributes redirectAttributes
+    ) {
 
         if (result.hasErrors()) {
             model.addAttribute("vendors", vendorService.findVendor());
             redirectAttributes.addFlashAttribute("errorMessage", "Por favor corrige los errores en el formulario");
             return "formMovie";
+        }
+
+        if (!imagFile.isEmpty()) {
+            String titleFormatted = movie.getName().replaceAll("[^a-zA-Z0-9_]", "_");
+            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String extension = imagFile.getOriginalFilename() != null
+                                ? imagFile.getOriginalFilename().substring(imagFile.getOriginalFilename().lastIndexOf("."))
+                                : "";
+            String nuevoNombreArchivo = titleFormatted + timestamp + extension;
+
+            String rutaImagenes = "iamges/";
+            Path rutaCompleta = Paths.get(rutaImagenes + nuevoNombreArchivo);
+
+            try {
+                Files.write(rutaCompleta, imagFile.getBytes());
+                movie.setImg(nuevoNombreArchivo);
+            } catch (Exception e) {
+                e.printStackTrace();
+                redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Errer, vuelve a intentar"
+                );
+                return "formMovie";
+                // TODO: handle exception
+            }
         }
 // msg de exito
 String successMessage = (movie.getId() == null) ? "pelicula creada" : "pelicula actualizada";

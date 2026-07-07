@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.company.movie.models.Movie;
@@ -86,6 +87,77 @@ String successMessage = (movie.getId() == null) ? "pelicula creada" : "pelicula 
         return "redirect:/moviesDetails/" + movie.getId();
     }
 
+    @GetMapping("movies/update")
+public String updateMovie(
+        @Valid Movie movie,
+        BindingResult result,
+        @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+        Model model,
+        RedirectAttributes redirectAttributes){
+        // obtener url si ya hay una
+        String existingImageUrl = movieService.getMovieById(movie.getId()).getImg();
+        if (imageFile == null || imageFile.isEmpty()) {
+            movie.setImg(existingImageUrl);
+        } else {
+            String titleFormatted = movie.getName().replaceAll("[^a-zA-Z0-9_]", "_");
+            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String extension = imageFile.getOriginalFilename() != null
+                    ? imageFile.getOriginalFilename().substring(imageFile.getOriginalFilename().lastIndexOf("."))
+                    : "";
+
+            String nuevoNombreArchivo = titleFormatted + timestamp + extension;
+            // ruta
+            String imageDir = "images/";
+            Path fulPath = Paths.get(imageDir + nuevoNombreArchivo);
+
+            try {
+                Files.write(fulPath, imageFile.getBytes());
+                movie.setImg(nuevoNombreArchivo);
+            } catch (Exception e) {
+                e.printStackTrace();
+                redirectAttributes.addFlashAttribute(
+                        "errorMessage",
+                        "Error al guardar imagen");
+                return "formMovie";
+
+            }
+
+        }
+
+        if (result.hasErrors()) {
+            model.addAttribute("vendors", vendorService.findVendor());
+            return "formMovie";
+        }
+
+        movieService.saveMovie(movie);
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Pelicula actualizada");
+
+        return "redirect:/moviesDetails/" + movie.getId();
+
+    }
+
+    @PostMapping("/movies/delete/{id}")
+    public String deleteMovie(@PathVariable Integer id) {
+        Movie movie = movieService.getMovieById(id);
+        if (movie != null && movie.getImg() != null) {
+            String imagePath = "images/" + movie.getImg();
+            try {
+                Path path = Paths.get(imagePath);
+                Files.deleteIfExists(path);
+            } catch (Exception e) {
+e.printStackTrace();
+}
+        }
+movieService.deleteMovie(id);
+
+
+return "redirect:/";
+    }
+
+
     @GetMapping("movies/edit/{id}")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
         Movie movie = movieService.getMovieById(id);
@@ -99,11 +171,11 @@ String successMessage = (movie.getId() == null) ? "pelicula creada" : "pelicula 
         return "formMovie";
     }
 
-    @PostMapping("movies/delete/{id}")  
-public String deleteMovie(@PathVariable Integer id) {
-    movieService.deleteMovie(id);
-    return "redirect:/";
-}
+//     @PostMapping("movies/delete/{id}")  
+// public String deleteMovie(@PathVariable Integer id) {
+//     movieService.deleteMovie(id);
+//     return "redirect:/";
+// }
 
 
 }

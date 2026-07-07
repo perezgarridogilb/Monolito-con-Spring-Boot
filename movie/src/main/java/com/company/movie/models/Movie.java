@@ -26,7 +26,7 @@ public class Movie {
         @NotBlank(message = "Description cannot be empty")
     @Column(columnDefinition = "varchar(3000)")
     private String description;
-        @NotEmpty(message = "Image cannot be empty")
+        // @NotEmpty(message = "Image cannot be empty")
     @Column(length = 500)
     private String img;
 

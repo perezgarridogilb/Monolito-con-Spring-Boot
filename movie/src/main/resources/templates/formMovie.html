@@ -13,34 +13,16 @@
   </head>
   <body>
     <!-- NAV -->
-  <div class="row bg">
-    <nav class="navbar navbar-expand-lg navbar-dark container">
-      <a class="navbar-brand" href="#">App - Movie</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle 
-    navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
   <!-- FIN NAV -->
 
    <!-- CONTAINER -->
   <div class="container mt-4 mb-4">
-    <h1>New movie</h1>
+     <h1 th:text="${movie.id != null} ? 'Edit movie' : 'New movie'">Nueva Pelicula</h1>
+
     <!-- ROW -->
     <div class="row">
-      <form method="post" th:action="@{/movies/save}" th:object="${movie}" class="col-md-12">
+ <form th:action="${movie.id != null} ? @{/movies/update} : @{/movies/save}"  th:object="${movie}"  enctype="multipart/form-data" method="post" class="col-md-12">
         <input type="hidden" th:field="*{id}">
         <div class="form-group"><!-- Movie name-->
           <label for="name">Name</label>
@@ -59,7 +41,11 @@
         </div>
         <div class="form-group"><!--Movie img-->
           <label for="img">Image</label>
-          <input type="text" class="form-control" th:field="*{img}" id="img" placeholder="Movie image">
+                              <div th:if="${movie.img != null}">
+                        <img th:src="@{/images/{imagen}(imagen=${movie.img})}" alt="Imagen de la película" style="max-width: 200px;" />
+                        <p th:text="${movie.img}"></p> <!-- Mostrar el nombre del archivo -->
+                    </div>
+                    <input type="file" id="img" name="imageFile"> <!-- Cambiado a "imageFile" -->	
           <div th:if="${#fields.hasErrors('img')}" class="text-danger">
 <span th:errors="*{img}">Error</span>
 </div>
@@ -73,7 +59,8 @@
 <span th:errors="*{vendor}">Error</span>
 </div>
         </div>
-        <button type="submit" class="btn btn-success">Save</button>
+        <button type="submit" class="btn btn-success" th:text="${movie.id != null} ? 'Update' : 'Save'">Save</button>
+<button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancelar</button>
       </form>
   
     </div> <!-- FIN ROW -->

@@ -13,6 +13,7 @@ import com.company.movie.models.Movie;
 import com.company.movie.service.MovieService;
 import com.company.movie.service.VendorService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -62,10 +63,15 @@ public class MovieCrudController {
                                 : "";
             String nuevoNombreArchivo = titleFormatted + timestamp + extension;
 
-            String rutaImagenes = "iamges/";
+            String rutaImagenes = "images/";
             Path rutaCompleta = Paths.get(rutaImagenes + nuevoNombreArchivo);
 
             try {
+                Path uploadPath = Paths.get("images");
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
                 Files.write(rutaCompleta, imagFile.getBytes());
                 movie.setImg(nuevoNombreArchivo);
             } catch (Exception e) {
@@ -87,13 +93,15 @@ String successMessage = (movie.getId() == null) ? "pelicula creada" : "pelicula 
         return "redirect:/moviesDetails/" + movie.getId();
     }
 
-    @GetMapping("movies/update")
+    @PostMapping("movies/update")
 public String updateMovie(
-        @Valid Movie movie,
+    HttpServletRequest request,
+        /* @Valid */ Movie movie,
         BindingResult result,
         @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
         Model model,
         RedirectAttributes redirectAttributes){
+        // request.getParameterMap() es request->all() en laravel
         // obtener url si ya hay una
         String existingImageUrl = movieService.getMovieById(movie.getId()).getImg();
         if (imageFile == null || imageFile.isEmpty()) {
@@ -106,11 +114,19 @@ public String updateMovie(
                     : "";
 
             String nuevoNombreArchivo = titleFormatted + timestamp + extension;
+
+
+
             // ruta
             String imageDir = "images/";
             Path fulPath = Paths.get(imageDir + nuevoNombreArchivo);
 
             try {
+                            Path uploadPath = Paths.get("images");
+
+if (!Files.exists(uploadPath)) {
+    Files.createDirectories(uploadPath);
+}
                 Files.write(fulPath, imageFile.getBytes());
                 movie.setImg(nuevoNombreArchivo);
             } catch (Exception e) {

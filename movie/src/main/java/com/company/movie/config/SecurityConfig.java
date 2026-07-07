@@ -18,7 +18,7 @@ public class SecurityConfig {
             .requestMatchers(
                 "/", "/moviesDetails/**", "/movieByVendor/**",
                  "/search/**", "/css/**", "/js/**", "/img/**", "/register", "/login", "/resources/**",
-                 "/logout"
+                 "/logout", "/images/**"
                 ).permitAll()
             .anyRequest().authenticated()
         ).formLogin(form -> form

@@ -45,7 +45,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></sc
 <div class="container mt-4 mb-4"> <!-- CONTAINER -->
       <div class="row"> <!-- ROW -->
         <div class="col-md-6">
-          <img th:src="${movie.img}" class="card-img-top" alt="movie">
+           <img th:src="@{/images/{imagen}(imagen=${movie.img})}" class="card-img-top" alt="movie">
         </div>
         <div class="col-md-6">
           <h5 th:text="${movie.name}" class="card-title">Movie title</h5>

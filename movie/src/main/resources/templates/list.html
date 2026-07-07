@@ -17,28 +17,7 @@
 <div th:insert="~{fragments/navbar :: navbar}"></div>
 
 <body>
-  <!-- NAV -->
-  <div class="row bg">
-    <nav class="navbar navbar-expand-lg navbar-dark container">
-      <a class="navbar-brand" href="#">App - Movie</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle 
-    navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
-  <!-- FIN NAV -->
+
 
 
   <div class="container">
@@ -68,7 +47,7 @@ justify-content-md-start">
         <a th:href="@{/moviesDetails/{id}(id=${movie.id})}" class="movie-card" style="display: 
           block; text-decoration: none; color: inherit;">
           <div class="card">
-            <img th:src="${movie.img}" class="card-img-top" alt="movie">
+<img th:src="@{/images/{imagen}(imagen=${movie.img})}" class="card-img-top" alt="movie">
             <div class="card-body">
               <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
               <p><strong>Genre:</strong> <span>Action</span></p>

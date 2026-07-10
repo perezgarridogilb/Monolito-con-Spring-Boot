@@ -50,6 +50,18 @@
 <span th:errors="*{img}">Error</span>
 </div>
         </div>
+
+        <!--Movie Genre-->
+        <div class="form-group">
+            <label for="genre">Genre</label>
+            <select class="form-control" th:field="*{genre}" id="genre">
+                <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('genre')}" class="text-danger">
+                <span th:errors="*{genre}">Error</span>
+            </div>
+         </div>
+
         <div class="form-group"><!--Movie vendor-->
           <label for="vendor">Vendor</label>
           <select class="form-control" th:field="*{vendor}" id="vendor">

@@ -49,18 +49,18 @@ src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></sc
         </div>
         <div class="col-md-6">
           <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
-          <p><strong>Genre:</strong> <span>Action</span></p>
+          <p><strong>Genre:</strong> <span th:text="${movie.genre.name}"></span></p>
           <p><strong>Vendor:</strong> <a th:href="@{/movieByVendor(vendorId=${movie.vendor.id})}"
               class="badge badge-pill badge-warning" th:text="${movie.vendor.name}"></a></p>
           <p th:text="${movie.description}" class="card-text">
             <strong>Description:</strong> Movie description.
           </p>
 
-          <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-primary">Editar</a>
+          <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-primary" sec:authorize="hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')">Editar</a>
 
 <form id="deleteForm" th:action="@{/movies/delete/{id}(id=${movie.id})}" method="post" class="d-inline" style="margin-left: 10px;">
 <input type="hidden" name="_method" value="delete" />
-<button type="button" id="deleteButton" class="btn btn-danger">Eliminar</button>
+<button type="button" id="deleteButton" class="btn btn-danger" sec:authorize="hasAnyRole('ROLE_EDITOR', 'ROLE_ADMIN')">Eliminar</button>
 </form>
 
 

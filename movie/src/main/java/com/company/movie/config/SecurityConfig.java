@@ -14,13 +14,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
-            .requestMatchers("/admin/**", "/genero/**").hasRole("ADMIN")
-            .requestMatchers(
-                "/", "/moviesDetails/**", "/movieByVendor/**",
-                 "/search/**", "/css/**", "/js/**", "/img/**", "/register", "/login", "/resources/**",
-                 "/logout", "/images/**"
-                ).permitAll()
-            .anyRequest().authenticated()
+ // Rutas públicas
+                 .requestMatchers("/*", "/moviesDetails/*", "/movieByVendor/**", 
+                 "/search/**", "/css/**", "/js/**", "/img/**", "/images/**",
+                  "/login", "/logout").permitAll()
+ 
+                 
+                 // Rutas que requieren autenticación
+              
+                 .requestMatchers("/movies/edit/**").hasAnyRole("ADMIN", "EDITOR")
+                 .requestMatchers("/movies/delete/**").hasRole("ADMIN")
+                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                 .requestMatchers("/genres/**").hasRole("ADMIN")
+                 
+                 .anyRequest().authenticated()
         ).formLogin(form -> form
             .loginPage("/login")
             .defaultSuccessUrl("/", true))

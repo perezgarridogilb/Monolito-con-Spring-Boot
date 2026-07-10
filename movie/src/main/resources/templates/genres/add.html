@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar GÃĐnero de PelÃ­cula</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        /* Estilo del tÃ­tulo */
+        h1 {
+            color: #00bcd4;
+            /* Color vibrante */
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Estilo del formulario */
+        .form-container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333333;
+            /* Fondo claro */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo de etiquetas y campos */
+        label {
+            color: #00bcd4;
+        }
+
+        input[type="text"] {
+            border-color: #00bcd4;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+        }
+
+        /* Estilo de los botones */
+        button[type="submit"],
+        .btn-back {
+            color: #fff;
+            background-color: #00bcd4;
+            border-color: #00bcd4;
+        }
+
+        button[type="submit"]:hover,
+        .btn-back:hover {
+            background-color: #0097a7;
+            /* Un tono mÃĄs oscuro para el hover */
+            border-color: #0097a7;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAV -->
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <!-- FIN NAV -->
+    <h1>Agregar GÃĐnero</h1>
+    <div class="container form-container">
+        <form th:action="@{/genres/add}" method="post">
+            <div class="form-group">
+                <label for="name" class="font-weight-bold">Nombre del GÃĐnero</label>
+                <input type="text" id="name" name="name" class="form-control" placeholder="Ejemplo: AcciÃģn, Drama"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+        </form>
+        <a href="/genres/list" class="btn btn-back btn-block mt-3">Volver a la lista</a>
+    </div>
+    <!-- Font Awesome for Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -50,7 +50,7 @@ justify-content-md-start">
 <img th:src="@{/images/{imagen}(imagen=${movie.img})}" class="card-img-top" alt="movie">
             <div class="card-body">
               <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
-              <p><strong>Genre:</strong> <span>Action</span></p>
+              <p><strong>Genre:</strong> <span th:text="${movie.genre.name}">Action</span></p>
               <p><strong>Vendor:</strong> <span class="badge badge-pill 
           badge-warning" th:text="${movie.vendor.name}"></span></p>
               <p th:text="${#strings.abbreviate(movie.description, 70)}" class="card-text">

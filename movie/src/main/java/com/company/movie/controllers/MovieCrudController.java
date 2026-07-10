@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.company.movie.models.Movie;
+import com.company.movie.service.GenreService;
 import com.company.movie.service.MovieService;
 import com.company.movie.service.VendorService;
 
@@ -33,11 +34,14 @@ public class MovieCrudController {
 
     private final VendorService vendorService;
     private final MovieService movieService;
+        private final GenreService genreService;
 
     @GetMapping("/movies/create")
     public String showFormMovie(Model model) {
         model.addAttribute("vendors", vendorService.findVendor());
         model.addAttribute("movie", new Movie());
+                model.addAttribute("genres", genreService.findAll());
+
         return "formMovie";
     }
     @PostMapping("/movies/save")
@@ -51,6 +55,8 @@ public class MovieCrudController {
 
         if (result.hasErrors()) {
             model.addAttribute("vendors", vendorService.findVendor());
+                            model.addAttribute("genres", genreService.findAll());
+
             redirectAttributes.addFlashAttribute("errorMessage", "Por favor corrige los errores en el formulario");
             return "formMovie";
         }
@@ -142,6 +148,8 @@ if (!Files.exists(uploadPath)) {
 
         if (result.hasErrors()) {
             model.addAttribute("vendors", vendorService.findVendor());
+                            model.addAttribute("genres", genreService.findAll());
+
             return "formMovie";
         }
 
@@ -181,6 +189,7 @@ return "redirect:/";
             throw new IllegalArgumentException("Movie not found" + id);
         }
                 model.addAttribute("vendors", vendorService.findVendor());
+                model.addAttribute("genres", genreService.findAll());
 
     model.addAttribute("movie", movie);  // <--- esto falta
 

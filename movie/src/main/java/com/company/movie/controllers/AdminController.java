@@ -15,6 +15,8 @@ import com.company.movie.models.User;
 import com.company.movie.repositories.AppUserRepository;
 import com.company.movie.repositories.RolRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class AdminController {
 
@@ -35,6 +37,7 @@ public String dashboard(Model model) {
 
 @PostMapping("admin/updateRol")
 public String updateRole(
+    HttpServletRequest request,
     @RequestParam("userId") Integer userId,
             @RequestParam("rol") Integer rolId
 

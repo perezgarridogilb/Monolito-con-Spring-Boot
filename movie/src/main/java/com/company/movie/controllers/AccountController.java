@@ -1,6 +1,7 @@
 package com.company.movie.controllers;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,7 @@ import com.company.movie.models.User;
 import com.company.movie.repositories.AppUserRepository;
 import com.company.movie.repositories.RolRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @Controller
@@ -60,7 +62,7 @@ model.addAttribute("registerDto", new RegisterDTO());
             }
 
             try {
-                Rol userRol = rolRepository.findByName("ROLE_USER");
+                Rol userRol = rolRepository.findByName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("No se encontró el rol: ROLE_USER"));
 
                 if (userRol == null) {
                     throw new RuntimeException("Role 'ROLE_USER' not found in database");

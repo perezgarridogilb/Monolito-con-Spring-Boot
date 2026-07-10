@@ -60,10 +60,10 @@
                     <td th:text="${user.rol.name}"></td>
                     <td>
                         <!-- Formulario para actualizar rol -->
-                        <form action="/admin/updateRole" method="post" class="d-inline">
+                        <form action="/admin/updateRol" method="post" class="d-inline">
                             <input type="hidden" name="_csrf" th:value="${_csrf.token}">
                             <input type="hidden" name="userId" th:value="${user.id}">
-                            <select name="role" class="custom-select custom-select-sm w-auto d-inline" required>
+                            <select name="rol" class="custom-select custom-select-sm w-auto d-inline" required>
                                 <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"
                                     th:selected="${role.id == user.rol.id}"></option>
                             </select>

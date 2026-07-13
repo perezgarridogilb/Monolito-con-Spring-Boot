@@ -1,5 +1,7 @@
 package com.company.movie.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,20 +20,26 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userrepository.findByEmail(email);
-        if (user != null) {
-            String rol = user.getRol().getName().replace("ROLE_", "");
+        Optional<User> userOptional = userrepository.findByEmail(email);
+        User user = userOptional.orElseThrow();
 
-            var springUser = org.springframework.security.core.userdetails.User.withUsername(user.getFirstName())
+        // if (user != null) {
+        String rol = user.getRol().getName().replace("ROLE_", "");
+
+        var springUser = org.springframework.security.core.userdetails.User.withUsername(user.getFirstName())
                 .password(user.getPassword())
                 .roles(rol)
                 .build();
 
-                return springUser;
-        }
+        return springUser;
+        // }
 
-        throw new UsernameNotFoundException("Not found: " + email);
+        // throw new UsernameNotFoundException("Not found: " + email);
 
+    }
+
+    public Optional<User> existsByEmail(String email) {
+        return userrepository.findByEmail(email);
     }
 
 }

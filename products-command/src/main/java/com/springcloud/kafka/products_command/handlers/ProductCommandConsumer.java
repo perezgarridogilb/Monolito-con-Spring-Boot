@@ -16,7 +16,7 @@ public class ProductCommandConsumer {
     private static final Logger log = LoggerFactory.getLogger(ProductCommandConsumer.class);
 
     @Bean
-public Consumer<Command<ProductDto>> handler() {
+public Consumer<Command<ProductDto>> handleCommands() {
     return cmd -> {
         log.info("Comando recibido y consumido con éxito: type={}, body={}", cmd.type(), cmd.body());
     };

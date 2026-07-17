@@ -1,4 +1,4 @@
-package com.springcloud.kafka.products_command.handlers;
+package com.springcloud.springcloud.handlers;
 
 import java.util.function.Consumer;
 
@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 
-import com.springcloud.kafka.products_command.messaging.ReplyInbox;
-import com.springcloud.kafka.products_command.models.Repply;
+import com.springcloud.springcloud.messaging.ReplyInbox;
+import com.springcloud.springcloud.models.Repply;
+
 
 @Configuration
 public class RepliesConsumer {

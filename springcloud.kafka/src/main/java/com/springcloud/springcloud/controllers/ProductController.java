@@ -1,4 +1,4 @@
-package com.springcloud.springcloud.kafka.controllers;
+package com.springcloud.springcloud.controllers;
 
 import java.util.Map;
 

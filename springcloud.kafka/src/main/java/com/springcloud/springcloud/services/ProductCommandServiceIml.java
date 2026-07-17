@@ -7,7 +7,7 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-import com.springcloud.springcloud.models.dto.Command;
+import com.springcloud.springcloud.models.Command;
 import com.springcloud.springcloud.models.dto.ProductDto;
 
 @Service

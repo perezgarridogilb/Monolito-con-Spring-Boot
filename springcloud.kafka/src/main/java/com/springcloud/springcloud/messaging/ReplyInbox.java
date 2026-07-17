@@ -1,11 +1,11 @@
-package com.springcloud.kafka.products_command.messaging;
+package com.springcloud.springcloud.messaging;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.springcloud.kafka.products_command.models.Repply;
+import com.springcloud.springcloud.models.Repply;
 
 @Component
 public class ReplyInbox {

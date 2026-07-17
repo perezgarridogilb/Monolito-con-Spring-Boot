@@ -13,6 +13,7 @@ public class ReplyInbox {
 
     public CompletableFuture<Repply<?>> register(String correlationId) {
         CompletableFuture<Repply<?>> future = new CompletableFuture<>();
+        pending.put(correlationId, future);
         return future;
      }
 

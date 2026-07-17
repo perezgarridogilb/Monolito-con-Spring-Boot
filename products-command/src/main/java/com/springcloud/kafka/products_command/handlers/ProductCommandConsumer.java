@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 
 import com.springcloud.kafka.products_command.models.Command;
 import com.springcloud.kafka.products_command.models.Repply;
@@ -23,11 +25,12 @@ private final ProductService productService;
     this.productService = productService;
 }
 @Bean
-public Function<Command<ProductDto>, Repply<?>> handleCommands() {
-    return cmd -> {
+public Function<Message<Command<ProductDto>>, Message<Repply<?>>> handleCommands() {
+return message -> {
+        Command<ProductDto> cmd = message.getPayload(); // Obtienes el payload del mensaje
         String type = cmd.type() == null ? "" : cmd.type().toUpperCase();
         
-        return switch (type) {
+         Repply<?> result = switch (type) {
             case "CREATE" -> {
                 if (cmd.body() == null) {
                     yield new Repply<>("ERROR", "Create EMPTY BODY", null);
@@ -45,6 +48,8 @@ public Function<Command<ProductDto>, Repply<?>> handleCommands() {
                 yield new Repply<>("ERROR", "Unknown command", null);
             }
         };
+        
+        return MessageBuilder.<Repply<?>>withPayload(result).build();
     };
 }
 }

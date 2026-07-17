@@ -1,13 +1,20 @@
 package com.springcloud.springcloud.services;
 
+import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import com.springcloud.springcloud.messaging.ReplyInbox;
 import com.springcloud.springcloud.models.Command;
+import com.springcloud.springcloud.models.Repply;
 import com.springcloud.springcloud.models.dto.ProductDto;
 
 @Service
@@ -15,16 +22,21 @@ public class ProductCommandServiceIml implements ProductCommandService {
 
     // El StreamBridge funciona como nuestro Event Dispatcher o Bus en Laravel
     private final StreamBridge bridge;
+    private final ReplyInbox replyInbox;
 
-    public ProductCommandServiceIml(StreamBridge bridge) {
+    
+
+    public ProductCommandServiceIml(StreamBridge bridge, ReplyInbox replyInbox) {
         this.bridge = bridge;
+        this.replyInbox = replyInbox;
     }
 
     @Override
-    public void sendCreate(ProductDto dto) {
+    public Repply<?> sendCreateAndAwait(ProductDto dto, Duration timeout) {
         // Creamos el comando (equivale a instanciar un Job o Event en Laravel)
         Command<ProductDto> cmd = new Command<>("CREATE", null, dto);
         String correlationId = UUID.randomUUID().toString();
+        CompletableFuture<Repply<?>> future = replyInbox.register(correlationId);
         Message<Command<ProductDto>> msg = MessageBuilder.withPayload(cmd)
         .setHeader("correlationId", correlationId).build();
         
@@ -36,5 +48,16 @@ public class ProductCommandServiceIml implements ProductCommandService {
         if (!sent) {
             throw new IllegalStateException("No se pudo enviar el comando a kafka");
         }
+        try {
+            return future.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Thread was interrupted while waiting for reply", e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException("Error processing command reply", e.getCause());
+        } catch (TimeoutException e) {
+            throw new RuntimeException("Timeout waiting for reply", e);
+        }
+
     }
 }

@@ -17,39 +17,49 @@ import com.springcloud.kafka.products_command.services.ProductService;
 
 @Configuration
 public class ProductCommandConsumer {
-
     private static final Logger log = LoggerFactory.getLogger(ProductCommandConsumer.class);
-private final ProductService productService;
+
+    private final ProductService service;
 
     public ProductCommandConsumer(ProductService productService) {
-    this.productService = productService;
-}
-@Bean
-public Function<Message<Command<ProductDto>>, Message<Repply<?>>> handleCommands() {
-return message -> {
-        Command<ProductDto> cmd = message.getPayload(); // Obtienes el payload del mensaje
-        String type = cmd.type() == null ? "" : cmd.type().toUpperCase();
-        
-         Repply<?> result = switch (type) {
-            case "CREATE" -> {
-                if (cmd.body() == null) {
-                    yield new Repply<>("ERROR", "Create EMPTY BODY", null);
+        this.service = productService;
+    }
+
+    @Bean
+    public Function<Message<Command<ProductDto>>, Message<Repply<?>>> handleCommands() {
+        return msg -> {
+            Command<ProductDto> cmd = msg.getPayload();
+            String type = cmd.type() == null ? "" : cmd.type().toUpperCase();
+            Repply<?> reply;
+            switch (type) {
+                case "CREATE" -> {
+                    if(cmd.body() == null) {
+                        log.warn("Create Empty body");
+                        reply = new Repply<>("ERROR", "Create Empty body", null);
+                    }
+                    ProductDto productSave = service.create(cmd.body());
+
+                    log.info("Creating product name={}, price={}", productSave.name(), productSave.price());
+                    reply = new Repply<>("SUCCESS", "Create product name", productSave);
                 }
-                ProductDto productSave = productService.create(cmd.body());
-                yield new Repply<>("SUCCESS", "Product created", productSave);
+                // case "READ" -> log.info("Reading product by id");
+                // case "READ_ALL" -> log.info("Reading all products");
+                // case "UPDATE" -> log.info("Updating product name={}, price={}", null, null);
+                // case "DELETE" -> log.info("Deleting product");
+                default -> {
+                    log.warn("Unknown command type={}", type);
+                    reply = new Repply<>("ERROR", "Unknown command type", null);
+                }
             }
-            case "UPDATE" -> {
-                // Implementar lógica y retornar un Repply
-                yield new Repply<>("SUCCESS", "Update not implemented yet", null);
+            String correlationId = msg.getHeaders().get("correlationId", String.class);
+            log.info("Recibiendo CorrelationId={}", correlationId);
+
+            MessageBuilder<Repply<?>> out = MessageBuilder.withPayload(reply);
+            if(correlationId != null) {
+                out.setHeader("correlationId", correlationId);
             }
-            // ... resto de casos
-            default -> {
-                log.warn("Unknown command type ={}", type);
-                yield new Repply<>("ERROR", "Unknown command", null);
-            }
+            
+            return out.build();
         };
-        
-        return MessageBuilder.<Repply<?>>withPayload(result).build();
-    };
-}
+    }
 }

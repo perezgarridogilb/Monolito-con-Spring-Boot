@@ -16,7 +16,15 @@ public class ReplyInbox {
         pending.put(correlationId, future);
         return future;
      }
-
+     // por debajo se usa handleReplies esta func
+     /**
+      * Llega un mensaje a handleReplies-in-0 (Kafka)
+Spring Cloud Stream invoca handleReplies() (el @Bean en RepliesConsumer)
+handleReplies() llama a replyInbox.complete(correlationId, payload)
+Ese complete() ejecuta future.complete(repply) que desbloquea future.get()
+      * @param correlationId
+      * @param repply
+      */
      public void complete(String correlationId, Repply<?> repply) {
         // CompletableFuture<Repply<?>> future = new CompletableFuture<>();
         if (correlationId == null) {

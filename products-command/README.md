@@ -7,3 +7,6 @@ docker exec -it kafka /opt/kafka/bin/kafka-topics.sh \
   --partitions 1 --replication-factor 1
 
 docker exec -it kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic products.replies --partitions 1 --replication-factor 1  
+
+
+macbook@MacBooks-MacBook-Pro ~/D/S/M/products-command (master) [1]> docker exec -it kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list

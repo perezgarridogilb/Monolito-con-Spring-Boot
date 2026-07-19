@@ -6,7 +6,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -23,8 +24,7 @@ public class ProductCommandServiceIml implements ProductCommandService {
     // El StreamBridge funciona como nuestro Event Dispatcher o Bus en Laravel
     private final StreamBridge bridge;
     private final ReplyInbox replyInbox;
-
-    
+    private static final Logger logger = LoggerFactory.getLogger(ProductCommandServiceIml.class);
 
     public ProductCommandServiceIml(StreamBridge bridge, ReplyInbox replyInbox) {
         this.bridge = bridge;
@@ -36,13 +36,16 @@ public class ProductCommandServiceIml implements ProductCommandService {
         // Creamos el comando (equivale a instanciar un Job o Event en Laravel)
         Command<ProductDto> cmd = new Command<>("CREATE", null, dto);
         String correlationId = UUID.randomUUID().toString();
+        logger.info("API Products Client Creating product with correlationId {}", correlationId);
         CompletableFuture<Repply<?>> future = replyInbox.register(correlationId);
         Message<Command<ProductDto>> msg = MessageBuilder.withPayload(cmd)
         .setHeader("correlationId", correlationId).build();
+
+        
         
         // Enviamos al canal definido como "commands-out-0"
         // '0' es el estándar para el primer binding de salida (productor)
-        boolean sent = this.bridge.send("commands-out-0", cmd);
+        boolean sent = this.bridge.send("commands-out-0", msg);
 
         // Validación de éxito similar a checar si un Job fue despachado
         if (!sent) {

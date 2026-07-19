@@ -8,4 +8,6 @@ import com.springcloud.springcloud.models.dto.ProductDto;
 public interface ProductCommandService {
 
     Repply<?> sendCreateAndAwait(ProductDto dto, Duration timeout );
+
+    Repply<?> sendReadAndAwait(Long id, Duration timeout);
 }

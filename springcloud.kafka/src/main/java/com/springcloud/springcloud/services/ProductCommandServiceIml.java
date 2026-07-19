@@ -35,14 +35,27 @@ public class ProductCommandServiceIml implements ProductCommandService {
     public Repply<?> sendCreateAndAwait(ProductDto dto, Duration timeout) {
         // Creamos el comando (equivale a instanciar un Job o Event en Laravel)
         Command<ProductDto> cmd = new Command<>("CREATE", null, dto);
+        return getSent(cmd, timeout);
+
+    }
+
+    @Override
+    public Repply<?> sendReadAndAwait(Long id, Duration timeout) {
+                // Creamos el comando (equivale a instanciar un Job o Event en Laravel)
+        Command<ProductDto> cmd = new Command<>("READ", id, null);
+        return getSent(cmd, timeout);
+    }
+
+    private Repply<?> getSent(
+        Command<?> cmd,
+        Duration timeout
+    ) {
         String correlationId = UUID.randomUUID().toString();
         logger.info("API Products Client Creating product with correlationId {}", correlationId);
-        CompletableFuture<Repply<?>> future = replyInbox.register(correlationId);
-        Message<Command<ProductDto>> msg = MessageBuilder.withPayload(cmd)
-        .setHeader("correlationId", correlationId).build();
+        var future = replyInbox.register(correlationId);
+        var msg = MessageBuilder.withPayload(cmd)
+                .setHeader("correlationId", correlationId).build();
 
-        
-        
         // Enviamos al canal definido como "commands-out-0"
         // '0' es el estándar para el primer binding de salida (productor)
         boolean sent = this.bridge.send("commands-out-0", msg);
@@ -61,6 +74,5 @@ public class ProductCommandServiceIml implements ProductCommandService {
         } catch (TimeoutException e) {
             throw new RuntimeException("Timeout waiting for reply", e);
         }
-
     }
 }

@@ -57,7 +57,10 @@ public class ProductCommandConsumer {
                     }
                     log.info("Reading product by id");
                 }
-                // case "READ_ALL" -> log.info("Reading all products");
+                case "READ_ALL" -> {
+                    reply = new Repply<>("SUCCESS", "Read all products", service.findAll());
+                    log.info("Reading all products");
+                }
                 // case "UPDATE" -> log.info("Updating product name={}, price={}", null, null);
                 // case "DELETE" -> log.info("Deleting product");
                 default -> {

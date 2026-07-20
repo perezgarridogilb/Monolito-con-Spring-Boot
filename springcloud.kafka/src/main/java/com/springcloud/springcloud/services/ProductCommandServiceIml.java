@@ -75,4 +75,12 @@ public class ProductCommandServiceIml implements ProductCommandService {
             throw new RuntimeException("Timeout waiting for reply", e);
         }
     }
+
+    @Override
+    public Repply<?> sendReadAllAndAwait(Duration timeout) {
+        Command<Object> cmd = new Command<>("READ_ALL", null, null);
+        return getSent(cmd, timeout);
+        // TODO Auto-generated method stub/* 
+        // throw new UnsupportedOperationException("Unimplemented method 'sendReadAllAndAwait'"); */
+    }
 }

@@ -1,5 +1,8 @@
 package com.springcloud.kafka.products_command.services;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +38,16 @@ return productRepository.findById(id)
     .map(Mappers::toDto)
     .orElse(null);
     }
+
+    @Override
+    @Transactional/* (readOnly = true) */
+    public Object findAll() {
+        return ((List<Product>)productRepository.findAll())
+        .stream() 
+        .map(Mappers::toDto)
+        .toList();
+    }
+
+    
 
 }

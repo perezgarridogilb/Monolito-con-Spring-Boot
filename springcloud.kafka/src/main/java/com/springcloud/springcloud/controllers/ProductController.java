@@ -49,4 +49,10 @@ public class ProductController {
         return ResponseEntity.badRequest().body(Map.of("error", reply.message()));
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        Repply<?> repply = commandService.sendReadAllAndAwait(Duration.ofSeconds(5));
+        return extracted(repply);
+    }
+
 }

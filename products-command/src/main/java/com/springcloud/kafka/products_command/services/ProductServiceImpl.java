@@ -7,6 +7,8 @@ import com.springcloud.kafka.products_command.entities.Product;
 import com.springcloud.kafka.products_command.models.dto.ProductDto;
 import com.springcloud.kafka.products_command.models.mapper.Mappers;
 import com.springcloud.kafka.products_command.repositories.ProductRepository;
+
+import jakarta.transaction.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -24,6 +26,14 @@ public class ProductServiceImpl implements ProductService {
         productNew.getPrice()
        ); */
        return Mappers.toDto(productRepository.save(Mappers.toEntity(dto)));
+    }
+
+    @Override
+    @Transactional
+    public ProductDto findById(Long id) {
+return productRepository.findById(id)
+    .map(Mappers::toDto)
+    .orElse(null);
     }
 
 }

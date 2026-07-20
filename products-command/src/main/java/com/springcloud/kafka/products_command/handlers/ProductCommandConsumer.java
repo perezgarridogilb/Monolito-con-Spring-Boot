@@ -42,7 +42,21 @@ public class ProductCommandConsumer {
                     log.info("Creating product name={}, price={}", productSave.name(), productSave.price());
                     reply = new Repply<>("SUCCESS", "Create product name", productSave);
                 }
-                // case "READ" -> log.info("Reading product by id");
+                case "READ" -> {
+                     if (cmd.id() == null) {
+
+                        log.warn("Read Empty Id");
+                        reply = new Repply<>("Error", "Id is required", null);
+                     }
+                     ProductDto dto = service.findById(cmd.id());
+                    if (cmd.id() == null) {
+                        log.warn("Read Empty Id");
+                        reply = new Repply<>("ERROR", "Product not found", null);
+                    } else {
+                        reply = new Repply<>("SUCCESS", "Read product name", dto);
+                    }
+                    log.info("Reading product by id");
+                }
                 // case "READ_ALL" -> log.info("Reading all products");
                 // case "UPDATE" -> log.info("Updating product name={}, price={}", null, null);
                 // case "DELETE" -> log.info("Deleting product");

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.springcloud.springcloud.messaging.ReplyInbox;
 import com.springcloud.springcloud.models.Command;
+import com.springcloud.springcloud.models.CommandType;
 import com.springcloud.springcloud.models.Repply;
 import com.springcloud.springcloud.models.dto.ProductDto;
 
@@ -34,22 +35,19 @@ public class ProductCommandServiceIml implements ProductCommandService {
     @Override
     public Repply<?> sendCreateAndAwait(ProductDto dto, Duration timeout) {
         // Creamos el comando (equivale a instanciar un Job o Event en Laravel)
-        Command<ProductDto> cmd = new Command<>("CREATE", null, dto);
-        return getSent(cmd, timeout);
+        return getSent(new Command<>(CommandType.CREATE, null, dto), timeout);
 
     }
 
     @Override
     public Repply<?> sendReadAndAwait(Long id, Duration timeout) {
-                // Creamos el comando (equivale a instanciar un Job o Event en Laravel)
-        Command<ProductDto> cmd = new Command<>("READ", id, null);
-        return getSent(cmd, timeout);
+        // Creamos el comando (equivale a instanciar un Job o Event en Laravel)
+        return getSent(new Command<>(CommandType.READ, id, null), timeout);
     }
 
     private Repply<?> getSent(
-        Command<?> cmd,
-        Duration timeout
-    ) {
+            Command<?> cmd,
+            Duration timeout) {
         String correlationId = UUID.randomUUID().toString();
         logger.info("API Products Client Creating product with correlationId {}", correlationId);
         var future = replyInbox.register(correlationId);
@@ -78,9 +76,21 @@ public class ProductCommandServiceIml implements ProductCommandService {
 
     @Override
     public Repply<?> sendReadAllAndAwait(Duration timeout) {
-        Command<Object> cmd = new Command<>("READ_ALL", null, null);
-        return getSent(cmd, timeout);
-        // TODO Auto-generated method stub/* 
-        // throw new UnsupportedOperationException("Unimplemented method 'sendReadAllAndAwait'"); */
+        return getSent(new Command<>(CommandType.READ_ALL, null, null), timeout);
+        // TODO Auto-generated method stub/*
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'sendReadAllAndAwait'"); */
     }
+
+    @Override
+    public Repply<?> sendDeleteAndAwait(Long id, Duration timeout) {
+        return getSent(new Command<>(CommandType.DELETE, id, null), timeout);
+    }
+
+    @Override
+    public Repply<?> sendUpdateAndAwait(ProductDto dto, Long id, Duration timeout) {
+
+        return getSent(new Command<>(CommandType.UPDATE, id, dto), timeout);
+    }
+
 }

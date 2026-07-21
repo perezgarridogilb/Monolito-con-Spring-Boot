@@ -41,11 +41,33 @@ return productRepository.findById(id)
 
     @Override
     @Transactional/* (readOnly = true) */
-    public Object findAll() {
+    public List<ProductDto> findAll() {
         return ((List<Product>)productRepository.findAll())
         .stream() 
         .map(Mappers::toDto)
         .toList();
+    }
+
+    @Override
+    public ProductDto update(Long id, ProductDto dto) {
+        Product entity = productRepository.findById(id).orElse(null);
+        if (entity == null) {
+            return null;
+        }
+        entity.setName(dto.name());
+        entity.setPrice(dto.price());
+        return Mappers.toDto(productRepository.save(entity));
+    }
+
+    @Override
+    @Transactional
+    public boolean delete(Long id) {
+        boolean result = productRepository.existsById(id);
+        if (result) {
+            productRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     

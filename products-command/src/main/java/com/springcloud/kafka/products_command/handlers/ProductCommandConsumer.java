@@ -1,19 +1,20 @@
 package com.springcloud.kafka.products_command.handlers;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 
 import com.springcloud.kafka.products_command.models.Command;
+import com.springcloud.kafka.products_command.models.CommandType;
 import com.springcloud.kafka.products_command.models.Repply;
 import com.springcloud.kafka.products_command.models.dto.ProductDto;
 import com.springcloud.kafka.products_command.services.ProductService;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Configuration
 public class ProductCommandConsumer {
@@ -29,10 +30,9 @@ public class ProductCommandConsumer {
     public Function<Message<Command<ProductDto>>, Message<Repply<?>>> handleCommands() {
         return msg -> {
             Command<ProductDto> cmd = msg.getPayload();
-            String type = cmd.type() == null ? "" : cmd.type().toUpperCase();
             Repply<?> reply;
-            switch (type) {
-                case "CREATE" -> {
+            switch (cmd.type()) {
+                case CommandType.CREATE -> {
                     if(cmd.body() == null) {
                         log.warn("Create Empty body");
                         reply = new Repply<>("ERROR", "Create Empty body", null);
@@ -42,29 +42,49 @@ public class ProductCommandConsumer {
                     log.info("Creating product name={}, price={}", productSave.name(), productSave.price());
                     reply = new Repply<>("SUCCESS", "Create product name", productSave);
                 }
-                case "READ" -> {
-                     if (cmd.id() == null) {
-
-                        log.warn("Read Empty Id");
+                case CommandType.READ -> {
+                    if(cmd.id() == null) {
+                        log.warn("Id is required");
                         reply = new Repply<>("Error", "Id is required", null);
-                     }
-                     ProductDto dto = service.findById(cmd.id());
-                    if (cmd.id() == null) {
-                        log.warn("Read Empty Id");
-                        reply = new Repply<>("ERROR", "Product not found", null);
-                    } else {
-                        reply = new Repply<>("SUCCESS", "Read product name", dto);
                     }
+                    ProductDto dto = service.findById(cmd.id());
+                    reply = (dto == null)?
+                            new Repply<>("ERROR", "Product not found", null):
+                            new Repply<>("SUCCESS", "Read product name", dto);
                     log.info("Reading product by id");
                 }
-                case "READ_ALL" -> {
+                case CommandType.READ_ALL -> {
                     reply = new Repply<>("SUCCESS", "Read all products", service.findAll());
                     log.info("Reading all products");
                 }
-                // case "UPDATE" -> log.info("Updating product name={}, price={}", null, null);
-                // case "DELETE" -> log.info("Deleting product");
+                case CommandType.UPDATE -> {
+                    if(cmd.body() == null || cmd.id() == null) {
+                        log.warn("Id and body is required");
+                        reply = new Repply<>("ERROR", "Id and body is required", null);
+                    }
+                    ProductDto dto = service.findById(cmd.id());
+
+                    if(dto != null) {
+                        reply = new Repply<>("SUCCESS", "Update product name", dto);
+                        log.info("Updating product name={}, price={}", dto.name(), dto.price());
+                    } else  {
+                        reply = new Repply<>("ERROR", "Product not found", null);
+                        log.info("Product not found, null dto");
+                    }
+                }
+                case CommandType.DELETE -> {
+                    if(cmd.id() == null) {
+                        log.warn("Id is required");
+                        reply = new Repply<>("ERROR", "Id is required", null);
+                    }
+                    boolean result = service.delete(cmd.id());
+                    reply = (result)? new Repply<>("SUCCESS", "Deleting Product", "deleted"):
+                            new Repply<>("ERROR", "Product not found", null);
+
+                    log.info("Deleting product");
+                }
                 default -> {
-                    log.warn("Unknown command type={}", type);
+                    log.warn("Unknown command type={}", cmd.type());
                     reply = new Repply<>("ERROR", "Unknown command type", null);
                 }
             }

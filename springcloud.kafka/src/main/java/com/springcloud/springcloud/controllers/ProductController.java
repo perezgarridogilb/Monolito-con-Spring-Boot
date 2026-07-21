@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     private ResponseEntity<?> extracted(Repply<?> reply) {
-        if ("SUCCESS".equalsIgnoreCase(reply.status())) {
+        if (reply.status().isSuccess()) {
             return ResponseEntity.ok(reply.body());
         }
         return ResponseEntity.badRequest().body(Map.of("error", reply.message()));

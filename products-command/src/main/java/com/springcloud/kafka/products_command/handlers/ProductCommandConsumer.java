@@ -10,6 +10,7 @@ import org.springframework.messaging.Message;
 import com.springcloud.kafka.products_command.models.Command;
 import com.springcloud.kafka.products_command.models.CommandType;
 import com.springcloud.kafka.products_command.models.Repply;
+import com.springcloud.kafka.products_command.models.RepplyStatus;
 import com.springcloud.kafka.products_command.models.dto.ProductDto;
 import com.springcloud.kafka.products_command.services.ProductService;
 
@@ -35,57 +36,57 @@ public class ProductCommandConsumer {
                 case CommandType.CREATE -> {
                     if(cmd.body() == null) {
                         log.warn("Create Empty body");
-                        reply = new Repply<>("ERROR", "Create Empty body", null);
+                        reply = new Repply<>(RepplyStatus.ERROR, "Create Empty body", null);
                     }
                     ProductDto productSave = service.create(cmd.body());
 
                     log.info("Creating product name={}, price={}", productSave.name(), productSave.price());
-                    reply = new Repply<>("SUCCESS", "Create product name", productSave);
+                    reply = new Repply<>(RepplyStatus.SUCCESS, "Create product name", productSave);
                 }
                 case CommandType.READ -> {
                     if(cmd.id() == null) {
                         log.warn("Id is required");
-                        reply = new Repply<>("Error", "Id is required", null);
+                        reply = new Repply<>(RepplyStatus.ERROR, "Id is required", null);
                     }
                     ProductDto dto = service.findById(cmd.id());
                     reply = (dto == null)?
-                            new Repply<>("ERROR", "Product not found", null):
-                            new Repply<>("SUCCESS", "Read product name", dto);
+                            new Repply<>(RepplyStatus.ERROR, "Product not found", null):
+                            new Repply<>(RepplyStatus.SUCCESS, "Read product name", dto);
                     log.info("Reading product by id");
                 }
                 case CommandType.READ_ALL -> {
-                    reply = new Repply<>("SUCCESS", "Read all products", service.findAll());
+                    reply = new Repply<>(RepplyStatus.SUCCESS, "Read all products", service.findAll());
                     log.info("Reading all products");
                 }
                 case CommandType.UPDATE -> {
                     if(cmd.body() == null || cmd.id() == null) {
                         log.warn("Id and body is required");
-                        reply = new Repply<>("ERROR", "Id and body is required", null);
+                        reply = new Repply<>(RepplyStatus.ERROR, "Id and body is required", null);
                     }
                     ProductDto dto = service.findById(cmd.id());
 
                     if(dto != null) {
-                        reply = new Repply<>("SUCCESS", "Update product name", dto);
+                        reply = new Repply<>(RepplyStatus.SUCCESS, "Update product name", dto);
                         log.info("Updating product name={}, price={}", dto.name(), dto.price());
                     } else  {
-                        reply = new Repply<>("ERROR", "Product not found", null);
+                        reply = new Repply<>(RepplyStatus.ERROR, "Product not found", null);
                         log.info("Product not found, null dto");
                     }
                 }
                 case CommandType.DELETE -> {
                     if(cmd.id() == null) {
                         log.warn("Id is required");
-                        reply = new Repply<>("ERROR", "Id is required", null);
+                        reply = new Repply<>(RepplyStatus.ERROR, "Id is required", null);
                     }
                     boolean result = service.delete(cmd.id());
-                    reply = (result)? new Repply<>("SUCCESS", "Deleting Product", "deleted"):
-                            new Repply<>("ERROR", "Product not found", null);
+                    reply = (result)? new Repply<>(RepplyStatus.SUCCESS, "Deleting Product", "deleted"):
+                            new Repply<>(RepplyStatus.ERROR, "Product not found", null);
 
                     log.info("Deleting product");
                 }
                 default -> {
                     log.warn("Unknown command type={}", cmd.type());
-                    reply = new Repply<>("ERROR", "Unknown command type", null);
+                    reply = new Repply<>(RepplyStatus.ERROR, "Unknown command type", null);
                 }
             }
             String correlationId = msg.getHeaders().get("correlationId", String.class);

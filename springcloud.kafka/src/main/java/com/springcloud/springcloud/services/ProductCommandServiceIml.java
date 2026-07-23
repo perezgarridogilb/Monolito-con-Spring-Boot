@@ -48,6 +48,7 @@ public class ProductCommandServiceIml implements ProductCommandService {
     private Repply<?> getSent(
             Command<?> cmd,
             Duration timeout) {
+        // es unico
         String correlationId = UUID.randomUUID().toString();
         logger.info("API Products Client Creating product with correlationId {}", correlationId);
         var future = replyInbox.register(correlationId);

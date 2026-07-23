@@ -1,6 +1,7 @@
 package com.springcloud.kafka.products_command.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +51,14 @@ return productRepository.findById(id)
 
     @Override
     public ProductDto update(Long id, ProductDto dto) {
-        Product entity = productRepository.findById(id).orElse(null);
-        if (entity == null) {
-            return null;
-        }
-        entity.setName(dto.name());
-        entity.setPrice(dto.price());
-        return Mappers.toDto(productRepository.save(entity));
+Optional<Product> entityOptional = productRepository.findById(id);
+if (entityOptional.isPresent()) {
+    Product entity = entityOptional.orElse(null);
+    entity.setName(dto.name());
+    entity.setPrice(dto.price());
+    return Mappers.toDto(productRepository.save(entity));
+}
+return null;
     }
 
     @Override

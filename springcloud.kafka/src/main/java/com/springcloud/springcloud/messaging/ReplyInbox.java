@@ -19,9 +19,9 @@ public class ReplyInbox {
      // por debajo se usa handleReplies esta func
      /**
       * Llega un mensaje a handleReplies-in-0 (Kafka)
-Spring Cloud Stream invoca handleReplies() (el @Bean en RepliesConsumer)
-handleReplies() llama a replyInbox.complete(correlationId, payload)
-Ese complete() ejecuta future.complete(repply) que desbloquea future.get()
+        Spring Cloud Stream invoca handleReplies() (el @Bean en RepliesConsumer)
+        handleReplies() llama a replyInbox.complete(correlationId, payload)
+        Ese complete() ejecuta future.complete(repply) que desbloquea future.get()
       * @param correlationId
       * @param repply
       */

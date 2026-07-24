@@ -12,5 +12,11 @@ docker exec -it kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhos
 macbook@MacBooks-MacBook-Pro ~/D/S/M/products-command (master) [1]> docker exec -it kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
 
 ## Kubernetes example
+brew install minikube
+brew install kubectl
 kubectl run kbillingapp --image=sotobotero/udemy-devops:0.0.1 --port=80 80
+ minikube start --memory=2048 --cpus=2
+ kubectl run kbillingapp --image=sotobotero/udemy-devops:0.0.1 --port=80 80
+ minikube service --url kbillingapp
+
 kubectl describe pod kbillingapp

@@ -78,3 +78,23 @@ minikube service --url kbillingapp
 ```bash
 kubectl describe pod kbillingapp
 ```
+
+## Crear objetos en el clúster
+
+```bash
+kubectl apply -f devops/
+```
+
+<img width="1532" height="913" alt="Captura de pantalla 2026-07-26 a la(s) 8 16 44 p m" src="https://github.com/user-attachments/assets/f14166cc-14a1-4d6f-bdab-944e283314c8" />
+
+## Eliminar objetos del clúster
+
+```bash
+kubectl delete -f devops/
+```
+
+## Comprobar estado de minikube
+
+```bash
+minikube status
+```

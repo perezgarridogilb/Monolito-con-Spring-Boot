@@ -46,6 +46,13 @@ docker exec -it kafka /opt/kafka/bin/kafka-topics.sh \
 
 # Kubernetes Example
 
+dashboard
+
+minikube dashboard --url
+
+macbook@MacBooks-MacBook-Pro ~/D/S/M/p/devops (master)> minikube ip
+192.168.49.2
+
 ## Instalar herramientas
 
 ```bash
@@ -97,4 +104,18 @@ kubectl delete -f devops/
 
 ```bash
 minikube status
+```
+acceso a pg admin configurado:
+minikube service pgadmin-service
+
+
+```bash
+# Desenganchar
+eval (minikube docker-env -u)
+# Enganchar
+eval $(minikube -p minikube docker-env)
+
+docker build -t billingapp-back:0.0.4 --no-cache --build-arg JAR_FILE="./*.jar" .
+docker build -t billingapp-front:0.0.4 --no-cache . 
+
 ```

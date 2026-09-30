@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.io.IOException;
+import com.company.movie.service.S3Service;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class MovieCrudController {
     private final VendorService vendorService;
     private final MovieService movieService;
         private final GenreService genreService;
+        private final S3Service s3Service;
 
     @GetMapping("/movies/create")
     public String showFormMovie(Model model) {
@@ -44,18 +46,18 @@ public class MovieCrudController {
 
         return "formMovie";
     }
+
     @PostMapping("/movies/save")
     public String saveMovie(
-        @Valid Movie movie, 
-        BindingResult result, 
-        @RequestParam("imageFile") MultipartFile imagFile,
-        Model model, 
-        RedirectAttributes redirectAttributes
-    ) {
+            @Valid Movie movie,
+            BindingResult result,
+            @RequestParam("imageFile") MultipartFile imagFile,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
             model.addAttribute("vendors", vendorService.findVendor());
-                            model.addAttribute("genres", genreService.findAll());
+            model.addAttribute("genres", genreService.findAll());
 
             redirectAttributes.addFlashAttribute("errorMessage", "Por favor corrige los errores en el formulario");
             return "formMovie";
@@ -65,8 +67,8 @@ public class MovieCrudController {
             String titleFormatted = movie.getName().replaceAll("[^a-zA-Z0-9_]", "_");
             String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             String extension = imagFile.getOriginalFilename() != null
-                                ? imagFile.getOriginalFilename().substring(imagFile.getOriginalFilename().lastIndexOf("."))
-                                : "";
+                    ? imagFile.getOriginalFilename().substring(imagFile.getOriginalFilename().lastIndexOf("."))
+                    : "";
             String nuevoNombreArchivo = titleFormatted + timestamp + extension;
 
             String rutaImagenes = "images/";
@@ -83,15 +85,14 @@ public class MovieCrudController {
             } catch (Exception e) {
                 e.printStackTrace();
                 redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    "Errer, vuelve a intentar"
-                );
+                        "errorMessage",
+                        "Errer, vuelve a intentar");
                 return "formMovie";
                 // TODO: handle exception
             }
         }
-// msg de exito
-String successMessage = (movie.getId() == null) ? "pelicula creada" : "pelicula actualizada";
+        // msg de exito
+        String successMessage = (movie.getId() == null) ? "pelicula creada" : "pelicula actualizada";
 
         movieService.saveMovie(movie);
         redirectAttributes.addFlashAttribute("successMessage", successMessage);

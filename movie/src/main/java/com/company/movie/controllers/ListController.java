@@ -1,6 +1,8 @@
 package com.company.movie.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.movie.models.Movie;
 import com.company.movie.service.MovieService;
+import com.company.movie.service.S3Service;
 
 import org.springframework.ui.Model;
 
@@ -19,11 +22,26 @@ import org.springframework.ui.Model;
 public class ListController {
 
     private final MovieService movieService;
+    private final S3Service s3Service;
 
     public ListController(
-        MovieService mopService
+        MovieService mopService,
+        S3Service s3Service
     ) {
         this.movieService = mopService;
+        this.s3Service = s3Service;
+    }
+
+    private void addImageUrl(Model model, Movie movie) {
+        model.addAttribute("imageUrl", s3Service.url(movie.getImg()));
+    }
+
+    private void addImageUrls(Model model, List<Movie> movies) {
+        Map<Integer, String> urls = new HashMap<>();
+        for (Movie movie : movies) {
+            urls.put(movie.getId(), s3Service.url(movie.getImg()));
+        }
+        model.addAttribute("imageUrls", urls);
     }
     @GetMapping({"/", "/list"})
     public String listMovies(Model model, @RequestParam(defaultValue = "0") int page){
@@ -33,6 +51,7 @@ public class ListController {
                   model.addAttribute( "currentPage", page);
          model.addAttribute( "totalPages", moviePage.getTotalPages());
          model.addAttribute( "vendorId", null);
+         addImageUrls(model, moviePage.getContent());
 
         return "list";
     }
@@ -46,6 +65,7 @@ public class ListController {
                   model.addAttribute( "currentPage", page);
          model.addAttribute( "totalPages", moviePage.getTotalPages());
          model.addAttribute( "vendorId", vendorId); // provedor
+         addImageUrls(model, moviePage.getContent());
         return "list";
     }
 
@@ -62,6 +82,7 @@ public class ListController {
                   model.addAttribute( "currentPage", page);
          model.addAttribute( "totalPages", moviePage.getTotalPages());
          model.addAttribute( "query", query); // Para mantener la busqueda en la vista
+         addImageUrls(model, moviePage.getContent());
         return "list";
     }
 
@@ -69,6 +90,7 @@ public class ListController {
        public String viewMovieDetails(@PathVariable Integer id, Model model){
         Movie movie = movieService.getMovieById(id);
          model.addAttribute( "movie", movie);
+         addImageUrl(model, movie);
         return "movie-detail";
     }
 

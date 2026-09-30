@@ -47,7 +47,8 @@ justify-content-md-start">
         <a th:href="@{/moviesDetails/{id}(id=${movie.id})}" class="movie-card" style="display: 
           block; text-decoration: none; color: inherit;">
           <div class="card">
-<img th:src="@{/images/{imagen}(imagen=${movie.img})}" class="card-img-top" alt="movie">
+            <!-- <img th:src="@{/images/{imagen}(imagen=${movie.img})}" class="card-img-top" alt="movie"> -->
+            <img th:src="${imageUrls[movie.id]}" class="card-img-top" alt="movie">
             <div class="card-body">
               <h5 th:text="${movie.name}" class="card-title">Movie title</h5>
               <p><strong>Genre:</strong> <span th:text="${movie.genre.name}">Action</span></p>

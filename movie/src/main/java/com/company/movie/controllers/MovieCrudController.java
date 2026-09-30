@@ -42,7 +42,8 @@ public class MovieCrudController {
     public String showFormMovie(Model model) {
         model.addAttribute("vendors", vendorService.findVendor());
         model.addAttribute("movie", new Movie());
-                model.addAttribute("genres", genreService.findAll());
+        model.addAttribute("genres", genreService.findAll());
+        model.addAttribute("imageUrl", s3Service.url(null));
 
         return "formMovie";
     }
@@ -58,6 +59,7 @@ public class MovieCrudController {
         if (result.hasErrors()) {
             model.addAttribute("vendors", vendorService.findVendor());
             model.addAttribute("genres", genreService.findAll());
+            model.addAttribute("imageUrl", s3Service.url(movie.getImg()));
 
             redirectAttributes.addFlashAttribute("errorMessage", "Por favor corrige los errores en el formulario");
             return "formMovie";
@@ -80,7 +82,8 @@ public class MovieCrudController {
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
-                Files.write(rutaCompleta, imagFile.getBytes());
+                //Files.write(rutaCompleta, imagFile.getBytes());
+                s3Service.uploadImage(nuevoNombreArchivo, imagFile);
                 movie.setImg(nuevoNombreArchivo);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -134,7 +137,11 @@ public String updateMovie(
 if (!Files.exists(uploadPath)) {
     Files.createDirectories(uploadPath);
 }
-                Files.write(fulPath, imageFile.getBytes());
+                if (existingImageUrl != null && !existingImageUrl.isEmpty()) {
+                    s3Service.deleteImage(existingImageUrl);
+                }
+                s3Service.uploadImage(nuevoNombreArchivo, imageFile);
+                // Files.write(fulPath, imageFile.getBytes());
                 movie.setImg(nuevoNombreArchivo);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -149,7 +156,8 @@ if (!Files.exists(uploadPath)) {
 
         if (result.hasErrors()) {
             model.addAttribute("vendors", vendorService.findVendor());
-                            model.addAttribute("genres", genreService.findAll());
+            model.addAttribute("genres", genreService.findAll());
+            model.addAttribute("imageUrl", s3Service.url(movie.getImg()));
 
             return "formMovie";
         }

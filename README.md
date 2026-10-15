@@ -91,3 +91,7 @@ Variables de entorno necesarias en la configuración de la función:
 | `DB_PASS` | |
 | `SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE` | |
 
+# Funcionando con ECR, Lambda, RDS, S3 y Spring Boot con Thymeleaf en la liga del lambda
+
+<img width="1552" height="932" alt="Captura de pantalla 2026-09-30 a la(s) 12 33 30 p m" src="https://github.com/user-attachments/assets/2137d5aa-54ff-4c2d-8bb8-0cf95d2fe972" />
+

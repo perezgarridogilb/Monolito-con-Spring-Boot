@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.text.SimpleDateFormat;
@@ -35,8 +34,8 @@ public class MovieCrudController {
 
     private final VendorService vendorService;
     private final MovieService movieService;
-        private final GenreService genreService;
-        private final S3Service s3Service;
+    private final GenreService genreService;
+    private final S3Service s3Service;
 
     @GetMapping("/movies/create")
     public String showFormMovie(Model model) {
@@ -82,7 +81,7 @@ public class MovieCrudController {
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
-                //Files.write(rutaCompleta, imagFile.getBytes());
+                // Files.write(rutaCompleta, imagFile.getBytes());
                 s3Service.uploadImage(nuevoNombreArchivo, imagFile);
                 movie.setImg(nuevoNombreArchivo);
             } catch (Exception e) {
@@ -104,13 +103,13 @@ public class MovieCrudController {
     }
 
     @PostMapping("movies/update")
-public String updateMovie(
-    HttpServletRequest request,
-        /* @Valid */ Movie movie,
-        BindingResult result,
-        @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
-        Model model,
-        RedirectAttributes redirectAttributes){
+    public String updateMovie(
+            HttpServletRequest request,
+            /* @Valid */ Movie movie,
+            BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+            Model model,
+            RedirectAttributes redirectAttributes) {
         // request.getParameterMap() es request->all() en laravel
         // obtener url si ya hay una
         String existingImageUrl = movieService.getMovieById(movie.getId()).getImg();
@@ -125,18 +124,16 @@ public String updateMovie(
 
             String nuevoNombreArchivo = titleFormatted + timestamp + extension;
 
-
-
             // ruta
             String imageDir = "images/";
             Path fulPath = Paths.get(imageDir + nuevoNombreArchivo);
 
             try {
-                            Path uploadPath = Paths.get("images");
+                Path uploadPath = Paths.get("images");
 
-if (!Files.exists(uploadPath)) {
-    Files.createDirectories(uploadPath);
-}
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
                 if (existingImageUrl != null && !existingImageUrl.isEmpty()) {
                     s3Service.deleteImage(existingImageUrl);
                 }
@@ -181,15 +178,13 @@ if (!Files.exists(uploadPath)) {
                 Path path = Paths.get(imagePath);
                 Files.deleteIfExists(path);
             } catch (Exception e) {
-e.printStackTrace();
-}
+                e.printStackTrace();
+            }
         }
-movieService.deleteMovie(id);
+        movieService.deleteMovie(id);
 
-
-return "redirect:/";
+        return "redirect:/";
     }
-
 
     @GetMapping("movies/edit/{id}")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
@@ -197,19 +192,18 @@ return "redirect:/";
         if (movie == null) {
             throw new IllegalArgumentException("Movie not found" + id);
         }
-                model.addAttribute("vendors", vendorService.findVendor());
-                model.addAttribute("genres", genreService.findAll());
+        model.addAttribute("vendors", vendorService.findVendor());
+        model.addAttribute("genres", genreService.findAll());
 
-    model.addAttribute("movie", movie);  // <--- esto falta
+        model.addAttribute("movie", movie); // <--- esto falta
 
         return "formMovie";
     }
 
-//     @PostMapping("movies/delete/{id}")  
-// public String deleteMovie(@PathVariable Integer id) {
-//     movieService.deleteMovie(id);
-//     return "redirect:/";
-// }
-
+    // @PostMapping("movies/delete/{id}")
+    // public String deleteMovie(@PathVariable Integer id) {
+    // movieService.deleteMovie(id);
+    // return "redirect:/";
+    // }
 
 }

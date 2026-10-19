@@ -67,7 +67,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-private ResponseEntity<?> validation(BindingResult result) {
+    private ResponseEntity<?> validation(BindingResult result) {
         Map<String, String> errors = new HashMap<>();
 
         result.getFieldErrors().forEach(err -> {
@@ -77,27 +77,28 @@ private ResponseEntity<?> validation(BindingResult result) {
     }
 
     // @PutMapping("/{id}")
-    // public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody User user) {
-    //     return userRepository.findById(id).map(existing -> {
-    //         if (user.getFirstName() != null) existing.setFirstName(user.getFirstName());
-    //         if (user.getLastName() != null) existing.setLastName(user.getLastName());
-    //         if (user.getEmail() != null) existing.setEmail(user.getEmail());
-    //         if (user.getPhone() != null) existing.setPhone(user.getPhone());
-    //         if (user.getAddress() != null) existing.setAddress(user.getAddress());
-    //         if (user.getUsername() != null) existing.setUsername(user.getUsername());
-    //         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-    //             existing.setPassword(passwordEncoder.encode(user.getPassword()));
-    //         }
-    //         if (user.getRol() != null) {
-    //             Rol rol = rolRepository.findById(user.getRol().getId()).orElse(null);
-    //             existing.setRol(rol);
-    //         }
-    //         if (user.isEnable() != existing.isEnable()) {
-    //             existing.setEnable(user.isEnable());
-    //         }
-    //         User saved = userRepository.save(existing);
-    //         return ResponseEntity.ok(saved);
-    //     }).orElse(ResponseEntity.notFound().build());
+    // public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody
+    // User user) {
+    // return userRepository.findById(id).map(existing -> {
+    // if (user.getFirstName() != null) existing.setFirstName(user.getFirstName());
+    // if (user.getLastName() != null) existing.setLastName(user.getLastName());
+    // if (user.getEmail() != null) existing.setEmail(user.getEmail());
+    // if (user.getPhone() != null) existing.setPhone(user.getPhone());
+    // if (user.getAddress() != null) existing.setAddress(user.getAddress());
+    // if (user.getUsername() != null) existing.setUsername(user.getUsername());
+    // if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+    // existing.setPassword(passwordEncoder.encode(user.getPassword()));
+    // }
+    // if (user.getRol() != null) {
+    // Rol rol = rolRepository.findById(user.getRol().getId()).orElse(null);
+    // existing.setRol(rol);
+    // }
+    // if (user.isEnable() != existing.isEnable()) {
+    // existing.setEnable(user.isEnable());
+    // }
+    // User saved = userRepository.save(existing);
+    // return ResponseEntity.ok(saved);
+    // }).orElse(ResponseEntity.notFound().build());
     // }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.company.movie.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,9 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.company.movie.security.filter.JwtAuthenticationFilter;
+import com.company.movie.security.filter.JwtValidationFilter;
 
 @Configuration
 public class SpringSecurityConfig {
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     /**
@@ -45,6 +50,8 @@ public class SpringSecurityConfig {
                 .anyRequest().authenticated()
             )
             .addFilter(new JwtAuthenticationFilter(authenticationManager))
+                    .addFilter(new JwtValidationFilter(authenticationConfiguration.getAuthenticationManager()))
+
             .csrf(config -> config.disable())
             .sessionManagement(managment -> managment.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .build();

@@ -6,10 +6,11 @@ import static com.company.movie.security.filter.TokenJwtConfig.PREFIX_TOKEN;
 import static com.company.movie.security.filter.TokenJwtConfig.SECRET_KEY;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +20,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.company.movie.security.SimpleGrantedAuthorityJsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -53,12 +53,11 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
             String usename = claims.getSubject();
             Object authoritiesClaims = claims.get("authorities");
 
-            Collection<? extends GrantedAuthority> authorities = Arrays.asList(
-                    new ObjectMapper()
-                .addMixIn(SimpleGrantedAuthority.class,
-                SimpleGrantedAuthorityJsonCreator.class)
-                .readValue(authoritiesClaims.toString().getBytes(), SimpleGrantedAuthority[].class)
-                );
+            Collection<? extends GrantedAuthority> authorities = authoritiesClaims == null
+                    ? List.of()
+                    : ((List<?>) authoritiesClaims).stream()
+                            .map(auth -> new SimpleGrantedAuthority(auth.toString()))
+                            .collect(Collectors.toList());
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(usename, null, authorities);
             SecurityContextHolder .getContext().setAuthentication(authenticationToken);

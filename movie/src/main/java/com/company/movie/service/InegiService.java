@@ -11,11 +11,12 @@ import java.util.Map;
 @Service
 public class InegiService {
     private final RestClient restClient;
-
-    public InegiService(RestClient.Builder builder, @Value("${api.inegi.uri}") String baseUrl) {
+private final String baseUrl; 
+    public InegiService(@Value("${api.inegi.uri}") String baseUrl) {
+        this.baseUrl = baseUrl; // 2. La guardas en el campo de la clase
         // Configuramos la URL base y el timeout de 30 segundos
-        this.restClient = builder
-                .baseUrl(baseUrl)
+        this.restClient = RestClient.builder()
+                .baseUrl(this.baseUrl)
                 .requestFactory(new org.springframework.http.client.SimpleClientHttpRequestFactory() {{
                     setConnectTimeout(Duration.ofSeconds(30)); // timeout(30)
                     setReadTimeout(Duration.ofSeconds(30));
@@ -25,10 +26,16 @@ public class InegiService {
 
     public List<Map<String, Object>> getStates() {
         try {
-            return this.restClient.get()
-                    .uri("/mgee/")
+            String endpoint = this.baseUrl + "/mgee/";
+
+            Map<String, Object> response = this.restClient.get()
+                    .uri(endpoint)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
+                    .body(new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
+
+            return (List<Map<String, Object>>) response.get("datos");
+     
         } catch (Exception e) {
             throw new RuntimeException("No se pudo consultar el servicio de INEGI.", e);
         }

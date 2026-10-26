@@ -1,6 +1,9 @@
 package com.company.movie.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.SQLRestriction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -9,7 +12,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -17,6 +22,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "states")
+@SQLRestriction("deleted_at IS NULL")
 public class State {
 
     @Id
@@ -26,7 +32,7 @@ public class State {
     @Column(name = "cvegeo")
     private String cvegeo;
 
-    @Column(name = "cve_ent")
+@Column(name = "cve_ent", unique = true)
     private String cveEnt;
 
     @Column(name = "nomgeo")
@@ -58,9 +64,15 @@ public class State {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    // @JsonIgnore
-    // @OneToMany(mappedBy = "state")
-    // private List<Municipality> municipalities;
+    /* 
+    public function municipalities()
+    {
+        return $this->hasMany(Municipality::class, 'cve_ent', 'cve_ent');
+    }
+    */
+    @JsonIgnore
+    @OneToMany (mappedBy = "state")
+    private List<Municipality> municipalities;
 
     @PrePersist
     void onCreate() {
@@ -72,4 +84,14 @@ public class State {
     void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+//     @PreRemove
+// void onDelete() {
+//     if (municipalities != null) {
+//         LocalDateTime now = LocalDateTime.now();
+//         for (Municipality municipality : municipalities) {
+//             municipality.setDeletedAt(now);
+//         }
+//     }
+// }
 }

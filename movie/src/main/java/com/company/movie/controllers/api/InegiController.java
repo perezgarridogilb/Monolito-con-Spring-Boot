@@ -1,9 +1,15 @@
 package com.company.movie.controllers.api;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,9 +39,24 @@ public class InegiController {
         return states;
     }
     
-    public List<Map<String, Object>> getMunicipality() {
-        List<Map<String, Object>> states = inegiService.getStates();
-        int count = stateService.save(states);
-        return states;
+    @PostMapping("/municipalities")
+    public ResponseEntity<Map<String, Object>> getMunicipality(@RequestBody Map<String, Object> body) {
+        String keyState = (String) body.get("cve_ent");
+        List<Map<String, Object>> municipalities = inegiService.getMunicipalities(keyState);
+        int count = municipalityService.save(municipalities);
+
+        Map<String, Object> response = new HashMap<>();
+    response.put("success", true);
+    response.put("saved_count", count);
+    response.put("municipalities", municipalities);
+
+    return ResponseEntity.ok(response);
+       
+    }
+
+    @DeleteMapping("/states/{cveEnt}")
+    public ResponseEntity<Void> softDeleteState(@PathVariable String cveEnt) {
+        stateService.softDeleteState(cveEnt);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,12 +1,15 @@
 package com.company.movie.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.company.movie.models.State;
+import com.company.movie.repositories.MunicipalityRepository;
 import com.company.movie.repositories.StateRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StateService {
 
     private final StateRepository stateRepository;
+    private final MunicipalityRepository municipalityRepository;
     private final TransactionTemplate transactionTemplate;
 
     public int save(List<Map<String, Object>> states) {
@@ -66,5 +70,17 @@ public class StateService {
 
         return count;
     }
+
+    @Transactional
+    public void softDeleteState(String cveEnt) {
+    LocalDateTime now = LocalDateTime.now();
+    
+    State state = stateRepository.findByCveEntWithTrashed(cveEnt).orElseThrow();
+    state.setDeletedAt(now);
+    stateRepository.save(state);
+
+    // 2. Borrar masivamente todos sus municipios en 1 sola consulta SQL
+    municipalityRepository.softDeleteByCveEnt(now, cveEnt);
+}
     
 }

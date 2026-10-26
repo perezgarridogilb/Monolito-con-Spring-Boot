@@ -41,12 +41,16 @@ private final String baseUrl;
         }
     }
 
-    public List<Map<String, Object>> getMunicipalities(String keyState) {
-        try {
-            return this.restClient.get()
-                    .uri("/mgem/{keyState}", keyState)
+public List<Map<String, Object>> getMunicipalities(String keyState) {        try {
+String endpoint = this.baseUrl + "/mgem/" + keyState;
+
+            Map<String, Object> response = this.restClient.get()
+                    .uri(endpoint)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
+                    .body(new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
+
+            return (List<Map<String, Object>>) response.get("datos");
         } catch (Exception e) {
             throw new RuntimeException("No se pudo consultar el servicio de INEGI.", e);
         }

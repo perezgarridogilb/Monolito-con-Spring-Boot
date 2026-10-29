@@ -47,6 +47,7 @@ public class SpringSecurityConfig {
             .securityMatcher("/api/**")
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/users", "/api/login").permitAll()
+                .requestMatchers("/api/inegi/factorial").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilter(new JwtAuthenticationFilter(authenticationManager))
